@@ -23,8 +23,10 @@
     </h:head>
 
     <h:body styleClass="#{guestPreferences.inputStyleClass}" style="background-color: #303845 !important;">
-        <h:form>
-            <p:growl id="messages" showDetail="true"/>
+        <h:form prependId="false">
+            <p:growl id="messages" showDetail="true" escape="false" sticky="true" >
+                <p:autoUpdate />
+            </p:growl>
 
             <div class="layout-wrapper #{guestPreferences.menuMode} ">
                 <div class="layout-main">
@@ -35,8 +37,8 @@
                     </p:menubar>
 
                     <div jsf:id="areaTrabajo" class="layout-content" >
-                        <div class="p-grid dashboard">
-                            <div class="p-col-12 p-md-3">
+                        <div class="p-grid dashboard" jsf:id="dvDatosPersona">
+                            <div class="p-col-12 p-md-4">
                                 <div class="card ui-fluid" jsf:id="dvDatosGenerales">
                                     <h5>Datos generales</h5>
                                     <div class="p-field">
@@ -47,21 +49,24 @@
                                             <p:ajax update="dvDatosGenerales"/>
                                         </p:selectOneMenu>
                                     </div>
-                                    <div class="p-field">
-                                        <p:outputLabel for="txtPNom">Primer Nombre</p:outputLabel>
-                                        <p:inputText id="txtPNom"  value="#{personaView.persona.primerNombre}" disabled="#{personaView.disabled}"/>
-                                    </div>
-                                    <div class="p-field">
-                                        <p:outputLabel for="txtSNom">Segundo Nombre</p:outputLabel>
-                                        <p:inputText id="txtSNom" value="#{personaView.persona.segundoNombre}" disabled="#{personaView.disabled}"/>
-                                    </div>
-                                    <div class="p-field">
-                                        <p:outputLabel for="txtPApe">Primer Apellido</p:outputLabel>
-                                        <p:inputText id="txtPApe" value="#{personaView.persona.primerApellido}" disabled="#{personaView.disabled}"/>
-                                    </div>
-                                    <div class="p-field">
-                                        <p:outputLabel for="txtSApe">Segundo Apellido</p:outputLabel>
-                                        <p:inputText id="txtSApe" value="#{personaView.persona.segundoApellido}" disabled="#{personaView.disabled}"/>
+                                    <div class="ui-fluid p-formgrid p-grid">
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:outputLabel for="txtPNom">Primer Nombre</p:outputLabel>
+                                            <p:inputText id="txtPNom"  value="#{personaView.persona.primerNombre}" disabled="#{personaView.disabled}"/>
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:outputLabel for="txtSNom">Segundo Nombre</p:outputLabel>
+                                            <p:inputText id="txtSNom" value="#{personaView.persona.segundoNombre}" disabled="#{personaView.disabled}"/>
+                                        </div>
+
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:outputLabel for="txtPApe">Primer Apellido</p:outputLabel>
+                                            <p:inputText id="txtPApe" value="#{personaView.persona.primerApellido}" disabled="#{personaView.disabled}"/>
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:outputLabel for="txtSApe">Segundo Apellido</p:outputLabel>
+                                            <p:inputText id="txtSApe" value="#{personaView.persona.segundoApellido}" disabled="#{personaView.disabled}"/>
+                                        </div>
                                     </div>
                                     <div class="p-field" style="display: #{personaView.idGenero eq 2 ?'block':'none'}">
                                         <p:outputLabel for="txtApeCasa">Apellido de Casada</p:outputLabel>
@@ -71,21 +76,24 @@
 
                                 <div class="card ui-fluid">
                                     <h5>Otros</h5>
-                                    <div class="p-field">
-                                        <p:outputLabel for="txtDirec">Fecha de Nacimiento</p:outputLabel>
-                                        <p:calendar locale="es" pattern="dd/MM/yyyy" value="#{personaView.persona.fechaNacimiento}" disabled="#{personaView.disabled}"/>
+
+                                    <div class="ui-fluid p-formgrid p-grid">
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:outputLabel for="txtDirec">Fecha de Nacimiento</p:outputLabel>
+                                            <p:calendar locale="es" pattern="dd/MM/yyyy" value="#{personaView.persona.fechaNacimiento}" disabled="#{personaView.disabled}" navigator="true"/>
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:outputLabel for="txtNumID">Número documento de Indentidad</p:outputLabel>
+                                            <p:inputText id="txtNumID" value="#{personaView.persona.numeroDip}" disabled="#{personaView.disabled}"/>
+                                        </div>
                                     </div>
                                     <div class="p-field">
                                         <p:outputLabel for="txtMail">e-Mail</p:outputLabel>
                                         <p:inputText id="txtMail" value="#{personaView.persona.email}" disabled="#{personaView.disabled}"/>
                                     </div>
-                                    <div class="p-field">
-                                        <p:outputLabel for="txtNumID">Número documento de Indentidad</p:outputLabel>
-                                        <p:inputText id="txtNumID" value="#{personaView.persona.numeroDip}" disabled="#{personaView.disabled}"/>
-                                    </div>
                                 </div>
                             </div>
-                            <div class="p-col-12 p-md-3">
+                            <div class="p-col-12 p-md-2">
                                 <div class="card ui-fluid">
                                     <h5>Domicilio</h5>
                                     <div class="p-field">
@@ -167,15 +175,39 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="p-grid dashboard">
+                            <div class="p-col-12 p-md-12">
+                                <div class="card ui-fluid">
+                                    <p:dataTable value="#{personaView.lstPersonas}" var="per" lazy="true" rowKey="#{per.idPersona}" 
+                                                 selectionMode="single" selection="#{personaView.persona}">
+                                        <p:ajax event="rowSelect" update="dvDatosPersona" />
 
+                                        <p:column headerText="Nombres">
+                                            <p:outputLabel value="#{per.primerNombre} #{per.segundoNombre}" />
+                                        </p:column>
+                                        <p:column headerText="Apellidos">
+                                            <p:outputLabel value="#{per.primerApellido} #{per.segundoApellido} #{per.apellidoCasada}" />
+                                        </p:column>
+                                        <p:column headerText="Num.Doc.">
+                                            <p:outputLabel value="#{per.numeroDip}" />
+                                        </p:column>
+                                        <p:column headerText="Foto">
+                                            <p:graphicImage value="#{catalagosView.image}" width="50">
+                                                <f:param name="id" value="#{per.idPersona}" />
+                                            </p:graphicImage>
 
+                                        </p:column>
+                                    </p:dataTable>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>            
             </div>
 
         </h:form>
 
-        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:1rem;bottom:1rem">
+        <!--p:ajaxStatus style="width:32px;height:32px;position:fixed;right:1rem;bottom:1rem">
             <f:facet name="start">
                 <i class="pi pi-spin pi-spinner layout-ajax-loader-icon" aria-hidden="true" style="font-size: 3rem; font-weight: bold; color: white"></i>
             </f:facet>
@@ -183,8 +215,26 @@
             <f:facet name="complete">
                 <h:outputText value=""/>
             </f:facet>
+        </p:ajaxStatus-->
+
+        <p:ajaxStatus>
+            <f:facet name="default">                    
+
+            </f:facet>
+            <f:facet name="start">
+                <div id="div_modal" class="layout-content ui-widget-overlay ui-dialog-mask" style="z-index: 1000;"></div>
+                <div id="ajax_gif" class="ui-tooltip-text ui-corner-all ui-shadow">
+                    <i class="pi pi-refresh pi-spin ajax-loader" aria-hidden="true" 
+                       style="color: #349ffb; font-size: 36px; display: block;  position: relative;  top: 18%;  transform: translateY(-18%);"></i>
+                </div>
+            </f:facet>
+
+            <f:facet name="complete">
+                <h:outputText value="" />
+            </f:facet>
         </p:ajaxStatus>
         <div class="layout-mask modal-in"></div>
+        <h:outputStylesheet name="index.css" library="css"/>
         <h:outputStylesheet name="css/primeicons.css" library="paradise-layout"/>
         <h:outputStylesheet name="css/primeflex.min.css" library="paradise-layout"/>
         <h:outputStylesheet name="css/layout-blue.css" library="paradise-layout"/>

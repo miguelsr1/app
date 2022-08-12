@@ -41,6 +41,7 @@ public class PersonaView implements Serializable {
 
     private CroppedImage croppedImage;
     private UploadedFile originalImageFile;
+    private StreamedContent content;
 
     private List<Filtro> params = new ArrayList();
 
@@ -64,6 +65,10 @@ public class PersonaView implements Serializable {
 
     public void setPersona(Persona persona) {
         this.persona = persona;
+    }
+
+    public List<Persona> getLstPersonas() {
+        return personaRepo.findAll();
     }
 
     public Integer getIdGenero() {
@@ -170,6 +175,15 @@ public class PersonaView implements Serializable {
                 .build();
     }
 
+    public StreamedContent getFoto(byte[] img) {
+        return DefaultStreamedContent.builder()
+                .stream(() -> {
+                    return new ByteArrayInputStream(img);
+                })
+                .build();
+    }
+
+
     public void crop() {
         if (this.croppedImage == null || this.croppedImage.getBytes() == null || this.croppedImage.getBytes().length == 0) {
             JsfUtil.mensajeError("Fallo el corte de la imagen, intentelo nuevamente por favor!");
@@ -198,6 +212,12 @@ public class PersonaView implements Serializable {
             personaRepo.save(persona);
             JsfUtil.mensajeUpdate();
         }
+    }
+
+    public CroppedImage getMostrarFoto(byte[] image) {
+        CroppedImage im = new CroppedImage();
+        im.setBytes(image);
+        return im;
     }
 
 }
