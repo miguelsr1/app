@@ -1,38 +1,193 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      lang="en">
+
     <h:head>
-        <title>Facelet Title</title>
-        <link rel="stylesheet" href="https://unpkg.com/primeflex@3.1.2/primeflex.css"> </link>
-        <link rel="stylesheet" href="https://unpkg.com/primeflex/themes/saga-blue.css"> </link>
-<link rel="stylesheet" href="https://unpkg.com/primeflex/themes/arya-blue.css"> </link>
-<link rel="stylesheet" href="https://unpkg.com/primeflex/themes/vela-blue.css"> </link>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes"/>
+        </f:facet>
+        <title><ui:insert name="title">PrimeFaces Paradise</ui:insert></title>
+        <h:outputScript name="js/layout.js" library="paradise-layout"/>
+        <h:outputScript name="js/prism.js" library="paradise-layout"/>
+        <h:outputScript name="calendar-localization.js" library="js"/>
+
+        <ui:insert name="head"/>
     </h:head>
-    <h:body>
-        <div class="card">
-            <h5>Vertical</h5>
-            <div class="field">
-                <label for="firstname1">Firstname</label>
-                <p:inputText />
-            </div>
-            <div class="field">
-                <label for="lastname1">Lastname</label>
-                <p:inputText />
-            </div>
-        </div>
 
-        <p:dataTable value="#{departamentoView.lstDepartamentos}" var="depa">
-            <p:column headerText="Cód">
-                #{depa.codigoDepartamento}
-            </p:column>
-            <p:column headerText="Nombre">
-                #{depa.nombreDepartamento}
-            </p:column>
-        </p:dataTable>
-                     
-        <h:outputStylesheet library="webjars" name="primeflex/3.2.0/primeflex.min.css" />
+    <h:body styleClass="#{guestPreferences.inputStyleClass}" style="background-color: #303845 !important;">
+        <h:form>
+            <p:growl id="messages" showDetail="true"/>
+
+            <div class="layout-wrapper #{guestPreferences.menuMode} ">
+                <div class="layout-main">
+
+                    <p:menubar>
+                        <p:menuitem value="#{bundle['btn.nuevo']}" icon="pi pi-fw pi-plus" action="#{personaView.nuevo()}" update="areaTrabajo"/>
+                        <p:menuitem value="#{bundle['btn.guardar']}" icon="pi pi-fw pi-save" action="#{personaView.guardar()}"/>
+                    </p:menubar>
+
+                    <div jsf:id="areaTrabajo" class="layout-content" >
+                        <div class="p-grid dashboard">
+                            <div class="p-col-12 p-md-3">
+                                <div class="card ui-fluid" jsf:id="dvDatosGenerales">
+                                    <h5>Datos generales</h5>
+                                    <div class="p-field">
+                                        <p:outputLabel for="cboGen">Genero</p:outputLabel>
+                                        <p:selectOneMenu id="cboGen" value="#{personaView.idGenero}" disabled="#{personaView.disabled}" >
+                                            <f:selectItem itemLabel="Seleccione un genero" noSelectionOption="true"/>
+                                            <f:selectItems value="#{catalagosView.lstGenero}" var="gen" itemLabel="#{gen.descripcionGenero}" itemValue="#{gen.idGenero}"/>
+                                            <p:ajax update="dvDatosGenerales"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="p-field">
+                                        <p:outputLabel for="txtPNom">Primer Nombre</p:outputLabel>
+                                        <p:inputText id="txtPNom"  value="#{personaView.persona.primerNombre}" disabled="#{personaView.disabled}"/>
+                                    </div>
+                                    <div class="p-field">
+                                        <p:outputLabel for="txtSNom">Segundo Nombre</p:outputLabel>
+                                        <p:inputText id="txtSNom" value="#{personaView.persona.segundoNombre}" disabled="#{personaView.disabled}"/>
+                                    </div>
+                                    <div class="p-field">
+                                        <p:outputLabel for="txtPApe">Primer Apellido</p:outputLabel>
+                                        <p:inputText id="txtPApe" value="#{personaView.persona.primerApellido}" disabled="#{personaView.disabled}"/>
+                                    </div>
+                                    <div class="p-field">
+                                        <p:outputLabel for="txtSApe">Segundo Apellido</p:outputLabel>
+                                        <p:inputText id="txtSApe" value="#{personaView.persona.segundoApellido}" disabled="#{personaView.disabled}"/>
+                                    </div>
+                                    <div class="p-field" style="display: #{personaView.idGenero eq 2 ?'block':'none'}">
+                                        <p:outputLabel for="txtApeCasa">Apellido de Casada</p:outputLabel>
+                                        <p:inputText id="txtApeCasa" value="#{personaView.persona.apellidoCasada}" disabled="#{personaView.disabled}"/>
+                                    </div>
+                                </div>
+
+                                <div class="card ui-fluid">
+                                    <h5>Otros</h5>
+                                    <div class="p-field">
+                                        <p:outputLabel for="txtDirec">Fecha de Nacimiento</p:outputLabel>
+                                        <p:calendar locale="es" pattern="dd/MM/yyyy" value="#{personaView.persona.fechaNacimiento}" disabled="#{personaView.disabled}"/>
+                                    </div>
+                                    <div class="p-field">
+                                        <p:outputLabel for="txtMail">e-Mail</p:outputLabel>
+                                        <p:inputText id="txtMail" value="#{personaView.persona.email}" disabled="#{personaView.disabled}"/>
+                                    </div>
+                                    <div class="p-field">
+                                        <p:outputLabel for="txtNumID">Número documento de Indentidad</p:outputLabel>
+                                        <p:inputText id="txtNumID" value="#{personaView.persona.numeroDip}" disabled="#{personaView.disabled}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-md-3">
+                                <div class="card ui-fluid">
+                                    <h5>Domicilio</h5>
+                                    <div class="p-field">
+                                        <p:outputLabel for="cboDepa">Departamento</p:outputLabel>
+                                        <p:selectOneMenu id="cboDepa" value="#{personaView.codigoDepartamento}" disabled="#{personaView.disabled}">
+                                            <f:selectItem itemLabel="Seleccione un departamento" noSelectionOption="true"/>
+                                            <f:selectItems value="#{catalagosView.lstDepartamentos}" var="dep" itemLabel="#{dep.nombreDepartamento}" itemValue="#{dep.codigoDepartamento}"/>
+                                            <p:ajax update="cboMun" listener="#{personaView.actulizarMunicipios()}"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="p-field">
+                                        <p:outputLabel for="cboMun">Municipio</p:outputLabel>
+                                        <p:selectOneMenu id="cboMun" value="#{personaView.idMunicipio}" disabled="#{personaView.disabled}">
+                                            <f:selectItem itemLabel="Seleccione un municipio" noSelectionOption="true"/>
+                                            <f:selectItems value="#{personaView.lstMunicipios}" var="mun" itemLabel="#{mun.nombreMunicipio}" itemValue="#{mun.idMunicipio}" />
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="p-field">
+                                        <p:outputLabel for="txtDirec">Dirección</p:outputLabel>
+                                        <p:inputTextarea id="txtDirec" value="#{personaView.persona.domicilio}" disabled="#{personaView.disabled}"/>
+                                    </div>
+                                    <div class="p-field">
+                                        <p:outputLabel for="txtTel">Teléfono</p:outputLabel>
+                                        <p:inputMask id="txtTel" mask="9999-9999" value="#{personaView.persona.numeroTelefono}" disabled="#{personaView.disabled}"/>
+                                    </div>
+                                    <div class="p-field">
+                                        <p:outputLabel for="txtCel">Celular</p:outputLabel>
+                                        <p:inputMask id="txtCel" mask="9999-9999" value="#{personaView.persona.numeroCelular}" disabled="#{personaView.disabled}"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-col-12 p-md-6">
+                                <div class="card ui-fluid" jsf:id="cropperPanel">
+                                    <p:fileUpload mode="advanced"
+                                                  multiple="false"
+                                                  cancelLabel="#{bundle['btn.cancelar']}"
+                                                  uploadLabel="#{bundle['btn.upload']}"
+                                                  label="#{bundle['btn.choose']}"
+                                                  sizeLimit="102400" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                                  invalidSizeMessage="#{bundle['msj.error.foto.size.limit']}"
+                                                  invalidFileMessage="only gif | jpg | jpeg | png is allowed"
+                                                  update="messages cropperPanel"
+                                                  listener="#{personaView.handleFileUpload}"
+                                                  rendered="#{empty personaView.originalImageFile}"
+                                                  disabled="#{personaView.disabled}"/>
+
+                                    <p:outputPanel rendered="#{not empty personaView.originalImageFile}" id="cropped">
+                                        <div class="ui-fluid p-formgrid p-grid">
+                                            <div class="p-field p-col-12 p-md-2" style="display: #{empty personaView.croppedImage ? 'block':'none'}">
+                                                <p:commandButton value="#{bundle['btn.cortar']}"
+                                                                 icon="pi pi-camera"
+                                                                 action="#{personaView.crop}"
+                                                                 update="cropped messages" styleClass="my-3"/>
+                                            </div>
+                                            <div class="p-field p-col-12 p-md-3">
+                                                <p:commandButton value="#{bundle['btn.cambiarFoto']}"
+                                                                 icon="pi pi-sync"
+                                                                 action="#{personaView.cambiarOtraFoto}"
+                                                                 update="cropperPanel"/>
+                                            </div>
+                                        </div>
+                                        <h:panelGrid columns="1">
+                                            <h:panelGrid columns="2" cellpadding="7" >
+                                                <p:imageCropper rendered="#{empty personaView.croppedImage}"
+                                                                value="#{personaView.croppedImage}"
+                                                                id="imageCropper" cache="false"
+                                                                image="#{personaView.image}"
+                                                                initialCoords="50,50,150,100"
+                                                                minSize="50,50" maxSize="350,350"/>
+                                                <p:outputPanel>
+                                                    <p:graphicImage cache="false"
+                                                                    rendered="#{not empty personaView.croppedImage}"
+                                                                    value="#{personaView.cropped}"/>
+                                                </p:outputPanel>
+                                            </h:panelGrid>
+                                        </h:panelGrid>
+                                    </p:outputPanel>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>            
+            </div>
+
+        </h:form>
+
+        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:1rem;bottom:1rem">
+            <f:facet name="start">
+                <i class="pi pi-spin pi-spinner layout-ajax-loader-icon" aria-hidden="true" style="font-size: 3rem; font-weight: bold; color: white"></i>
+            </f:facet>
+
+            <f:facet name="complete">
+                <h:outputText value=""/>
+            </f:facet>
+        </p:ajaxStatus>
+        <div class="layout-mask modal-in"></div>
+        <h:outputStylesheet name="css/primeicons.css" library="paradise-layout"/>
+        <h:outputStylesheet name="css/primeflex.min.css" library="paradise-layout"/>
+        <h:outputStylesheet name="css/layout-blue.css" library="paradise-layout"/>
     </h:body>
-</html>
 
+</html>

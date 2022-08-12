@@ -1,22 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.demo.app.model;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,31 +19,14 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "PERSONA")
-@NamedQueries({
-    @NamedQuery(name = "Persona.findAll", query = "SELECT p FROM Persona p"),
-    @NamedQuery(name = "Persona.findByIdPersona", query = "SELECT p FROM Persona p WHERE p.idPersona = :idPersona"),
-    @NamedQuery(name = "Persona.findByPrimerApellido", query = "SELECT p FROM Persona p WHERE p.primerApellido = :primerApellido"),
-    @NamedQuery(name = "Persona.findBySegundoApellido", query = "SELECT p FROM Persona p WHERE p.segundoApellido = :segundoApellido"),
-    @NamedQuery(name = "Persona.findByPrimerNombre", query = "SELECT p FROM Persona p WHERE p.primerNombre = :primerNombre"),
-    @NamedQuery(name = "Persona.findBySegundoNombre", query = "SELECT p FROM Persona p WHERE p.segundoNombre = :segundoNombre"),
-    @NamedQuery(name = "Persona.findByFechaNacimiento", query = "SELECT p FROM Persona p WHERE p.fechaNacimiento = :fechaNacimiento"),
-    @NamedQuery(name = "Persona.findByNumeroDip", query = "SELECT p FROM Persona p WHERE p.numeroDip = :numeroDip"),
-    @NamedQuery(name = "Persona.findByNumeroTelefono", query = "SELECT p FROM Persona p WHERE p.numeroTelefono = :numeroTelefono"),
-    @NamedQuery(name = "Persona.findByNumeroCelular", query = "SELECT p FROM Persona p WHERE p.numeroCelular = :numeroCelular"),
-    @NamedQuery(name = "Persona.findByDomicilio", query = "SELECT p FROM Persona p WHERE p.domicilio = :domicilio"),
-    @NamedQuery(name = "Persona.findByApellidoCasada", query = "SELECT p FROM Persona p WHERE p.apellidoCasada = :apellidoCasada"),
-    @NamedQuery(name = "Persona.findByEmail", query = "SELECT p FROM Persona p WHERE p.email = :email"),
-    @NamedQuery(name = "Persona.findByFechaInsercion", query = "SELECT p FROM Persona p WHERE p.fechaInsercion = :fechaInsercion"),
-    @NamedQuery(name = "Persona.findByUsuarioInsercion", query = "SELECT p FROM Persona p WHERE p.usuarioInsercion = :usuarioInsercion"),
-    @NamedQuery(name = "Persona.findByEstadoEliminacion", query = "SELECT p FROM Persona p WHERE p.estadoEliminacion = :estadoEliminacion")})
 public class Persona implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
     @Basic(optional = false)
     @Column(name = "ID_PERSONA")
-    private BigDecimal idPersona;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer idPersona;
     @Column(name = "PRIMER_APELLIDO")
     private String primerApellido;
     @Column(name = "SEGUNDO_APELLIDO")
@@ -85,25 +60,23 @@ public class Persona implements Serializable {
     @Lob
     @Column(name = "URL_DIP")
     private byte[] urlDip;
-    @JoinColumn(name = "ID_GENERO", referencedColumnName = "ID_GENERO")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Genero idGenero;
-    @JoinColumn(name = "ID_MUNICIPIO", referencedColumnName = "ID_MUNICIPIO")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Municipio idMunicipio;
+    @Column(name = "ID_GENERO")
+    private Integer idGenero;
+    @Column(name = "ID_MUNICIPIO")
+    private Integer idMunicipio;
 
     public Persona() {
     }
 
-    public Persona(BigDecimal idPersona) {
+    public Persona(Integer idPersona) {
         this.idPersona = idPersona;
     }
 
-    public BigDecimal getIdPersona() {
+    public Integer getIdPersona() {
         return idPersona;
     }
 
-    public void setIdPersona(BigDecimal idPersona) {
+    public void setIdPersona(Integer idPersona) {
         this.idPersona = idPersona;
     }
 
@@ -227,45 +200,25 @@ public class Persona implements Serializable {
         this.urlDip = urlDip;
     }
 
-    public Genero getIdGenero() {
+    public Integer getIdGenero() {
         return idGenero;
     }
 
-    public void setIdGenero(Genero idGenero) {
+    public void setIdGenero(Integer idGenero) {
         this.idGenero = idGenero;
     }
 
-    public Municipio getIdMunicipio() {
+    public Integer getIdMunicipio() {
         return idMunicipio;
     }
 
-    public void setIdMunicipio(Municipio idMunicipio) {
+    public void setIdMunicipio(Integer idMunicipio) {
         this.idMunicipio = idMunicipio;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idPersona != null ? idPersona.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Persona)) {
-            return false;
-        }
-        Persona other = (Persona) object;
-        if ((this.idPersona == null && other.idPersona != null) || (this.idPersona != null && !this.idPersona.equals(other.idPersona))) {
-            return false;
-        }
-        return true;
     }
 
     @Override
     public String toString() {
         return "com.demo.mavenproject1.Persona[ idPersona=" + idPersona + " ]";
     }
-    
+
 }
