@@ -39,7 +39,7 @@ public abstract class AbstractRepository<Entity, Primary> {
     }
 
     public void delete(Entity entity) {
-        em.remove(entity);
+        em.remove(em.contains(entity) ? entity : em.merge(entity));
     }
 
     public Entity findByPk(Primary pk) {

@@ -33,9 +33,9 @@
 
                 <div class="layout-main">
                     <div jsf:id="areaTrabajo" class="layout-content" >
-                        <p:menubar style="margin-bottom: 1rem;">
+                        <p:menubar style="margin-bottom: 1rem;" id="mbMenu">
                             <p:menuitem value="#{bundle['btn.nuevo']}" icon="pi pi-fw pi-plus" action="#{personaView.nuevo()}" update="areaTrabajo"/>
-                            <p:menuitem value="#{bundle['btn.guardar']}" icon="pi pi-fw pi-save" action="#{personaView.guardar()}" disabled="#{personaView.disabled}" update="dvDatosPersona"/>
+                            <p:menuitem value="#{bundle['btn.guardar']}" icon="pi pi-fw pi-save" action="#{personaView.guardar()}" disabled="#{personaView.disabled}" update="dvDatosPersona tblDatosPersonas"/>
 
                             <f:facet  name="options">  
                                 <p:commandButton icon="pi pi-sign-out" value="Salir" action="#{guestPreferences.logout}"/>
@@ -155,9 +155,7 @@
                                 <div class="card ui-fluid">
                                     <h5>Listado de Personas</h5>
 
-                                    <p:dataTable value="#{personaView.lstPersonas}" var="per" lazy="true" rowKey="#{per.idPersona}" 
-                                                 selectionMode="single" selection="#{personaView.persona}">
-                                        <p:ajax event="rowSelect" listener="#{personaView.onRowSelect}" update="dvDatosPersona" />
+                                    <p:dataTable value="#{personaView.lstPersonas}" var="per" lazy="true" rowKey="#{per.idPersona}" id="tblDatosPersonas" widgetVar="tblDatosPersonas">
 
                                         <p:column headerText="Nombres">
                                             <p:outputLabel value="#{per.primerNombre} #{per.segundoNombre}" />
@@ -173,6 +171,15 @@
                                                 <f:param name="id" value="#{per.idPersona}" />
                                             </p:graphicImage>
                                         </p:column>
+                                        <p:column headerText="Operaciones">
+                                            <p:commandButton icon="pi pi-pencil" style="margin-right: 10px;" oncomplete="fnEditarPersona();"
+                                                             styleClass="edit-button rounded-button ui-button-success" process="@this" >
+                                                <f:setPropertyActionListener value="#{per}" target="#{personaView.persona}" />
+                                            </p:commandButton>
+                                            <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash" process="@this" oncomplete="PF('delPersonaDlg').show()" >
+                                                <f:setPropertyActionListener value="#{per}" target="#{personaView.persona}" />
+                                            </p:commandButton>
+                                        </p:column>
                                     </p:dataTable>
                                 </div>
                             </div>
@@ -180,6 +187,14 @@
                     </div>
                 </div>            
             </div>
+            
+            <p:remoteCommand name="fnEditarPersona" action="#{personaView.editarPersona()}" update="dvDatosPersona mbMenu"/>
+
+
+            <p:confirmDialog widgetVar="delPersonaDlg" showEffect="fade" width="300" message="#{bundle['msj.delete.persona']}" header="Confirm" severity="warn">
+                <p:commandButton value="Si" icon="pi pi-check" actionListener="#{personaView.eliminarPersona()}" process="@this" oncomplete="PF('delPersonaDlg').hide()" update="dvDatosPersona tblDatosPersonas mbMenu"/>
+                <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('delPersonaDlg').hide()" />
+            </p:confirmDialog>
 
             <p:dialog id="dlgFoto" widgetVar="dlgFoto" resizable="false" draggable="false" maximizable="false" minimizable="false" header="Fotografia de la Persona"
                       onShow="PF('dlgFoto').initPosition()" responsive="true" hideEffect="fade" showEffect="fade" width="700" height="500">

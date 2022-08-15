@@ -10,12 +10,15 @@ import com.demo.app.view.util.JsfUtil;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.security.enterprise.SecurityContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.CroppedImage;
@@ -32,12 +35,12 @@ import org.primefaces.model.file.UploadedFile;
 public class PersonaView implements Serializable {
 
     private Boolean disabled = true;
-    private String nombreDepartamento;
     private String codigoDepartamento;
     private Integer idGenero;
     private Integer idMunicipio;
 
     private Persona persona = new Persona();
+    private List<Persona> lstPersonas = new ArrayList();
     private List<Municipio> lstMunicipios = new ArrayList();
 
     private CroppedImage croppedImage;
@@ -47,10 +50,17 @@ public class PersonaView implements Serializable {
     private List<Filtro> params = new ArrayList();
 
     @Inject
-    private PersonaRepo personaRepo;
+    private SecurityContext securityContext;
 
     @Inject
+    private PersonaRepo personaRepo;
+    @Inject
     private MunicipioRepo municipioRepo;
+
+    @PostConstruct
+    public void init() {
+        lstPersonas = personaRepo.findAll();
+    }
 
     public Boolean getDisabled() {
         return disabled;
@@ -71,7 +81,7 @@ public class PersonaView implements Serializable {
     }
 
     public List<Persona> getLstPersonas() {
-        return personaRepo.findAll();
+        return lstPersonas;
     }
 
     public Integer getIdGenero() {
@@ -90,14 +100,6 @@ public class PersonaView implements Serializable {
         if (idMunicipio == null) {
             this.idMunicipio = idMunicipio;
         }
-    }
-
-    public String getNombreDepartamento() {
-        return nombreDepartamento;
-    }
-
-    public void setNombreDepartamento(String nombreDepartamento) {
-        this.nombreDepartamento = nombreDepartamento;
     }
 
     public String getCodigoDepartamento() {
@@ -128,6 +130,75 @@ public class PersonaView implements Serializable {
         params.clear();
         params.add(new Filtro(TipoOperador.EQUALS, "codigoDepartamento", codigoDepartamento));
         lstMunicipios = municipioRepo.findListByParam(params, "idMunicipio", false);
+    }
+
+    public void onRowSelect(SelectEvent<Persona> event) {
+        loadDatosPersona(event.getObject());
+    }
+
+    public void editarPersona() {
+        loadDatosPersona(persona);
+    }
+
+    public void loadDatosPersona(Persona per) {
+        idGenero = per.getIdGenero();
+        codigoDepartamento = municipioRepo.findByPk(per.getIdMunicipio()).getCodigoDepartamento();
+        actulizarMunicipios();
+        idMunicipio = per.getIdMunicipio();
+        disabled = false;
+    }
+
+    public void cambiarOtraFoto() {
+        originalImageFile = null;
+        croppedImage = null;
+    }
+
+    public void nuevo() {
+        persona = new Persona();
+        disabled = false;
+    }
+
+    public void eliminarPersona() {
+        personaRepo.delete(persona);
+        lstPersonas = personaRepo.findAll();
+        limpiarForm();
+        JsfUtil.mensajeInformacion("El Registro fue eliminado");
+    }
+
+    public void guardar() {
+        persona.setIdGenero(idGenero);
+        persona.setIdMunicipio(idMunicipio);
+        if (croppedImage != null) {
+            persona.setUrlDip(croppedImage.getBytes());
+
+            if (persona.getIdPersona() == null) {
+                persona.setFechaInsercion(new Date());
+                persona.setEstadoEliminacion((short) 0);
+                persona.setUsuarioInsercion(securityContext.getCallerPrincipal().getName());
+                personaRepo.save(persona);
+                lstPersonas.add(persona);
+                JsfUtil.mensajeInsert();
+            } else {
+                personaRepo.update(persona);
+                JsfUtil.mensajeUpdate();
+            }
+
+            limpiarForm();
+        } else {
+            JsfUtil.mensajeError("Debe de seleccionar una Imagen");
+        }
+    }
+
+    private void limpiarForm() {
+        disabled = true;
+        persona = new Persona();
+        croppedImage = null;
+        idGenero = null;
+        idMunicipio = null;
+        codigoDepartamento = null;
+        croppedImage = null;
+        originalImageFile = null;
+        content = null;
     }
 
     public void handleFileUpload(FileUploadEvent event) {
@@ -180,15 +251,6 @@ public class PersonaView implements Serializable {
                 .build();
     }
 
-    public void onRowSelect(SelectEvent<Persona> event) {
-        Persona per = event.getObject();
-        idGenero = per.getIdGenero();
-        codigoDepartamento = municipioRepo.findByPk(per.getIdMunicipio()).getCodigoDepartamento();
-        actulizarMunicipios();
-        idMunicipio = per.getIdMunicipio();
-        disabled = false;
-    }
-
     public StreamedContent getFoto(byte[] img) {
         return DefaultStreamedContent.builder()
                 .stream(() -> {
@@ -200,34 +262,6 @@ public class PersonaView implements Serializable {
     public void crop() {
         if (this.croppedImage == null || this.croppedImage.getBytes() == null || this.croppedImage.getBytes().length == 0) {
             JsfUtil.mensajeError("Fallo el corte de la imagen, intentelo nuevamente por favor!");
-        }
-    }
-
-    public void cambiarOtraFoto() {
-        originalImageFile = null;
-        croppedImage = null;
-    }
-
-    public void nuevo() {
-        persona = new Persona();
-        disabled = false;
-    }
-
-    public void guardar() {
-        persona.setIdGenero(idGenero);
-        persona.setIdMunicipio(idMunicipio);
-        if (croppedImage != null) {
-            persona.setUrlDip(croppedImage.getBytes());
-
-            if (persona.getIdPersona() == null) {
-                personaRepo.save(persona);
-                JsfUtil.mensajeInsert();
-            } else {
-                personaRepo.update(persona);
-                JsfUtil.mensajeUpdate();
-            }
-        } else {
-            JsfUtil.mensajeError("Debe de seleccionar una Imagen");
         }
     }
 
