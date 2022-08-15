@@ -15,12 +15,18 @@
  */
 package org.primefaces.paradise.view;
 
+import java.io.IOException;
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 
 @Named
 @SessionScoped
@@ -207,4 +213,15 @@ public class GuestPreferences implements Serializable {
         }
     }
 
+    public void logout() {
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.getExternalContext().getSessionMap().clear();
+            ExternalContext externalContext = context.getExternalContext();
+            externalContext.redirect(((ServletContext) externalContext.getContext()).getContextPath() + "/inicio.xhtml");
+            System.gc();
+        } catch (IOException ex) {
+            Logger.getLogger(GuestPreferences.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes"/>
+        </f:facet>
+        <title>Demo</title>
+    </h:head>
+
+    <h:body styleClass="login-body">
+        <h:form id="login" prependId="false">
+            <p:growl id="growl" showDetail="true" escape="false" sticky="true" >
+                <p:autoUpdate />
+            </p:growl>
+
+            <div class="login-panel ui-fluid">
+                <div class="p-grid p-nogutter">
+                    <div class="p-col-12 logo-container">
+                        <h:panelGrid columns="2" width="100%">
+                            <p:outputLabel style="font-size: 18px;">Demo</p:outputLabel>
+                        </h:panelGrid>
+                    </div>
+                    <div class="p-col-12">
+                        <p:outputLabel for="username" value="Usuario:"/>
+                        <div class="input-wrapper">
+                            <p:inputText id="username" widgetVar="username" placeholder="Usuario" value="#{loginView.usuario}"/>
+                            <p:graphicImage name="images/login/user.png" library="paradise-layout" styleClass="user-icon"/>
+                        </div>
+                    </div>
+                    <div class="p-col-12">
+                        <p:outputLabel for="password" value="Clave de acceso:"/>
+                        <div class="input-wrapper">
+                            <p:password id="password" widgetVar="password" placeholder="Contraseña" feedback="false" value="#{loginView.claveAcceso}" />
+                            <p:graphicImage name="images/login/lock.png" library="paradise-layout" styleClass="lock-icon"/>
+                        </div>
+                    </div>
+                    <div class="p-col-12 chkbox-container">
+
+                    </div>
+                    <div class="p-col-12 button-container">
+
+
+                        <p:commandButton id="submit" value="Ingresar" styleClass="ui-button-info ui-button-raised"
+                                         action="#{loginView.validarUsuario()}" update="@form" ajax="false" />
+                        <p:blockUI block="submit" trigger="submit" />
+                        <h:outputText value="."/>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </h:form>
+    </h:body>
+    <h:outputStylesheet name="css/primeicons.css" library="paradise-layout"/>
+    <h:outputStylesheet name="css/primeflex.min.css" library="paradise-layout"/>
+    <h:outputStylesheet name="css/layout-#{guestPreferences.layout}.css" library="paradise-layout"/>
+
+
+</html>

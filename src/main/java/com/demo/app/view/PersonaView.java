@@ -17,6 +17,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.CroppedImage;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -64,7 +65,9 @@ public class PersonaView implements Serializable {
     }
 
     public void setPersona(Persona persona) {
-        this.persona = persona;
+        if (persona != null) {
+            this.persona = persona;
+        }
     }
 
     public List<Persona> getLstPersonas() {
@@ -84,7 +87,9 @@ public class PersonaView implements Serializable {
     }
 
     public void setIdMunicipio(Integer idMunicipio) {
-        this.idMunicipio = idMunicipio;
+        if (idMunicipio == null) {
+            this.idMunicipio = idMunicipio;
+        }
     }
 
     public String getNombreDepartamento() {
@@ -175,6 +180,15 @@ public class PersonaView implements Serializable {
                 .build();
     }
 
+    public void onRowSelect(SelectEvent<Persona> event) {
+        Persona per = event.getObject();
+        idGenero = per.getIdGenero();
+        codigoDepartamento = municipioRepo.findByPk(per.getIdMunicipio()).getCodigoDepartamento();
+        actulizarMunicipios();
+        idMunicipio = per.getIdMunicipio();
+        disabled = false;
+    }
+
     public StreamedContent getFoto(byte[] img) {
         return DefaultStreamedContent.builder()
                 .stream(() -> {
@@ -182,7 +196,6 @@ public class PersonaView implements Serializable {
                 })
                 .build();
     }
-
 
     public void crop() {
         if (this.croppedImage == null || this.croppedImage.getBytes() == null || this.croppedImage.getBytes().length == 0) {

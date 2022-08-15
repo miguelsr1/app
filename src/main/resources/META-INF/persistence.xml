@@ -2,11 +2,12 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="demoPU" transaction-type="JTA">
     <jta-data-source>java:/DemoDS</jta-data-source>
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <class>com.demo.app.model.Municipio</class>
     <class>com.demo.app.model.Departamento</class>
     <class>com.demo.app.model.Genero</class>
     <class>com.demo.app.model.Persona</class>
+    <class>com.demo.app.model.Usuario</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties/>
   </persistence-unit>
 </persistence>

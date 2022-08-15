@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      lang="en">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes"/>
+        </f:facet>
+        <title><ui:insert name="title">PrimeFaces Paradise</ui:insert></title>
+        <h:outputScript name="js/layout.js" library="paradise-layout"/>
+        <h:outputScript name="js/prism.js" library="paradise-layout"/>
+        <h:outputScript name="calendar-localization.js" library="js"/>
+
+        <ui:insert name="head"/>
+    </h:head>
+
+    <h:body styleClass="#{guestPreferences.inputStyleClass}" style="background-color: #303845 !important;">
+        <h:form prependId="false">
+            <p:growl id="messages" showDetail="true" escape="false" sticky="true" >
+                <p:autoUpdate />
+            </p:growl>
+
+            <div class="layout-wrapper #{guestPreferences.menuMode} ">
+                <div class="layout-main">
+
+                    <p:menubar>
+                        <p:menuitem value="#{bundle['btn.nuevo']}" icon="pi pi-fw pi-plus" action="#{personaView.nuevo()}" update="areaTrabajo"/>
+                        <p:menuitem value="#{bundle['btn.guardar']}" icon="pi pi-fw pi-save" action="#{personaView.guardar()}"/>
+
+                        <f:facet  name="options">  
+                            <p:commandButton icon="pi pi-sign-out" value="Salir" action="#{guestPreferences.logout}"/>
+                        </f:facet>
+                    </p:menubar>
+
+                    <div jsf:id="areaTrabajo" class="layout-content" >
+                        <div class="p-grid dashboard" jsf:id="dvDatosPersona">
+                            <div class="p-col-12 p-md-8">
+                                <div class="card ui-fluid" jsf:id="dvDatosGenerales">
+                                    <h5>Datos generales</h5>
+                                    <div class="ui-fluid p-formgrid p-grid">
+                                        <div class="p-col-12 p-md-9">
+                                            <div class="p-field">
+                                                <p:outputLabel for="cboGen">Genero</p:outputLabel>
+                                                <p:selectOneMenu id="cboGen" value="#{personaView.idGenero}" disabled="#{personaView.disabled}" >
+                                                    <f:selectItem itemLabel="Seleccione un genero" noSelectionOption="true"/>
+                                                    <f:selectItems value="#{catalagosView.lstGenero}" var="gen" itemLabel="#{gen.descripcionGenero}" itemValue="#{gen.idGenero}"/>
+                                                    <p:ajax update="dvDatosGenerales"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                            <div class="ui-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-12 p-md-6">
+                                                    <p:outputLabel for="txtPNom">Primer Nombre</p:outputLabel>
+                                                    <p:inputText id="txtPNom"  value="#{personaView.persona.primerNombre}" disabled="#{personaView.disabled}"/>
+                                                </div>
+                                                <div class="p-field p-col-12 p-md-6">
+                                                    <p:outputLabel for="txtSNom">Segundo Nombre</p:outputLabel>
+                                                    <p:inputText id="txtSNom" value="#{personaView.persona.segundoNombre}" disabled="#{personaView.disabled}"/>
+                                                </div>
+
+                                                <div class="p-field p-col-12 p-md-6">
+                                                    <p:outputLabel for="txtPApe">Primer Apellido</p:outputLabel>
+                                                    <p:inputText id="txtPApe" value="#{personaView.persona.primerApellido}" disabled="#{personaView.disabled}"/>
+                                                </div>
+                                                <div class="p-field p-col-12 p-md-6">
+                                                    <p:outputLabel for="txtSApe">Segundo Apellido</p:outputLabel>
+                                                    <p:inputText id="txtSApe" value="#{personaView.persona.segundoApellido}" disabled="#{personaView.disabled}"/>
+                                                </div>
+                                            </div>
+                                            <div class="p-field" style="display: #{personaView.idGenero eq 2 ?'block':'none'}">
+                                                <p:outputLabel for="txtApeCasa">Apellido de Casada</p:outputLabel>
+                                                <p:inputText id="txtApeCasa" value="#{personaView.persona.apellidoCasada}" disabled="#{personaView.disabled}"/>
+                                            </div>
+
+                                            <div class="ui-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-12 p-md-6">
+                                                    <p:outputLabel for="txtDirec">Fecha de Nacimiento</p:outputLabel>
+                                                    <p:calendar locale="es" pattern="dd/MM/yyyy" value="#{personaView.persona.fechaNacimiento}" disabled="#{personaView.disabled}" navigator="true"/>
+                                                </div>
+                                                <div class="p-field p-col-12 p-md-6">
+                                                    <p:outputLabel for="txtNumID">Número documento de Indentidad</p:outputLabel>
+                                                    <p:inputText id="txtNumID" value="#{personaView.persona.numeroDip}" disabled="#{personaView.disabled}"/>
+                                                </div>
+                                            </div>
+                                            <div class="p-field">
+                                                <p:outputLabel for="txtMail">e-Mail</p:outputLabel>
+                                                <p:inputText id="txtMail" value="#{personaView.persona.email}" disabled="#{personaView.disabled}"/>
+                                            </div>  
+                                        </div>
+                                        <div class="p-col-12 p-md-3 ui-fluid "  style="vertical-align: middle !important;">
+                                            <div class="p-field aligns-items-center justify-content-center " jsf:id="dvFoto">
+                                                <p:graphicImage value="#{catalagosView.image}" width="150" rendered="#{personaView.persona.idPersona ne null}" >
+                                                    <f:param name="id" value="#{personaView.persona.idPersona}" />
+                                                </p:graphicImage>
+                                                <p:graphicImage name="empty.png" library="images" 
+                                                                style="max-width: 150px;"
+                                                                rendered="#{(empty personaView.croppedImage) and (personaView.persona.idPersona eq null)}" />
+
+                                                <p:graphicImage cache="false"
+                                                                style="max-width: 150px;"
+                                                                rendered="#{not empty personaView.croppedImage}"
+                                                                value="#{personaView.cropped}"/>
+                                                <br/>
+                                                <p:commandButton style="margin-top: 1rem;" icon="pi pi-camera" onclick="PF('dlgFoto').show();" action="#{personaView.cambiarOtraFoto}" update="pnlFoto dvFoto" disabled="#{personaView.disabled}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-md-4">
+                                <div class="card ui-fluid">
+                                    <h5>Domicilio</h5>
+                                    <div class="p-field">
+                                        <p:outputLabel for="cboDepa">Departamento</p:outputLabel>
+                                        <p:selectOneMenu id="cboDepa" value="#{personaView.codigoDepartamento}" disabled="#{personaView.disabled}">
+                                            <f:selectItem itemLabel="Seleccione un departamento" noSelectionOption="true"/>
+                                            <f:selectItems value="#{catalagosView.lstDepartamentos}" var="dep" itemLabel="#{dep.nombreDepartamento}" itemValue="#{dep.codigoDepartamento}"/>
+                                            <p:ajax update="cboMun" listener="#{personaView.actulizarMunicipios()}"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="p-field">
+                                        <p:outputLabel for="cboMun">Municipio</p:outputLabel>
+                                        <p:selectOneMenu id="cboMun" value="#{personaView.idMunicipio}" disabled="#{personaView.disabled}">
+                                            <f:selectItem itemLabel="Seleccione un municipio" noSelectionOption="true"/>
+                                            <f:selectItems value="#{personaView.lstMunicipios}" var="mun" itemLabel="#{mun.nombreMunicipio}" itemValue="#{mun.idMunicipio}" />
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="p-field">
+                                        <p:outputLabel for="txtDirec">Dirección</p:outputLabel>
+                                        <p:inputTextarea id="txtDirec" value="#{personaView.persona.domicilio}" disabled="#{personaView.disabled}"/>
+                                    </div>
+
+                                    <div class="ui-fluid p-formgrid p-grid">
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:outputLabel for="txtTel">Teléfono</p:outputLabel>
+                                            <p:inputMask id="txtTel" mask="9999-9999" value="#{personaView.persona.numeroTelefono}" disabled="#{personaView.disabled}"/>
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-6">
+                                            <p:outputLabel for="txtCel">Celular</p:outputLabel>
+                                            <p:inputMask id="txtCel" mask="9999-9999" value="#{personaView.persona.numeroCelular}" disabled="#{personaView.disabled}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-grid dashboard">
+                            <div class="p-col-12 p-md-12">
+                                <div class="card ui-fluid">
+                                    <h5>Listado de Personas</h5>
+
+                                    <p:dataTable value="#{personaView.lstPersonas}" var="per" lazy="true" rowKey="#{per.idPersona}" 
+                                                 selectionMode="single" selection="#{personaView.persona}">
+                                        <p:ajax event="rowSelect" listener="#{personaView.onRowSelect}" update="dvDatosPersona" />
+
+                                        <p:column headerText="Nombres">
+                                            <p:outputLabel value="#{per.primerNombre} #{per.segundoNombre}" />
+                                        </p:column>
+                                        <p:column headerText="Apellidos">
+                                            <p:outputLabel value="#{per.primerApellido} #{per.segundoApellido} #{per.apellidoCasada}" />
+                                        </p:column>
+                                        <p:column headerText="Num.Doc.">
+                                            <p:outputLabel value="#{per.numeroDip}" />
+                                        </p:column>
+                                        <p:column headerText="Foto">
+                                            <p:graphicImage value="#{catalagosView.image}" width="50">
+                                                <f:param name="id" value="#{per.idPersona}" />
+                                            </p:graphicImage>
+                                        </p:column>
+                                    </p:dataTable>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>            
+            </div>
+
+            <p:dialog id="dlgFoto" widgetVar="dlgFoto" resizable="false" draggable="false" maximizable="false" minimizable="false" header="Fotografia de la Persona"
+                      onShow="PF('dlgFoto').initPosition()" responsive="true" hideEffect="fade" showEffect="fade" width="700" height="500">
+                <p:outputPanel id="pnlFoto">
+                    <div class="card ui-fluid" jsf:id="cropperPanel">
+                        <p:fileUpload mode="advanced"
+                                      multiple="false"
+                                      cancelLabel="#{bundle['btn.cancelar']}"
+                                      uploadLabel="#{bundle['btn.upload']}"
+                                      label="#{bundle['btn.choose']}"
+                                      sizeLimit="102400" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                      invalidSizeMessage="#{bundle['msj.error.foto.size.limit']}"
+                                      invalidFileMessage="Solo los formatos gif | jpg | jpeg | png son permitido"
+                                      update="messages cropperPanel"
+                                      listener="#{personaView.handleFileUpload}"
+                                      rendered="#{empty personaView.originalImageFile}"
+                                      disabled="#{personaView.disabled}"/>
+
+                        <p:outputPanel rendered="#{not empty personaView.originalImageFile}" id="cropped">
+                            <div class="ui-fluid p-formgrid p-grid">
+                                <div class="p-field p-col-12 p-md-2" style="display: #{empty personaView.croppedImage ? 'block':'none'}">
+                                    <p:commandButton value="#{bundle['btn.cortar']}"
+                                                     icon="pi pi-camera"
+                                                     action="#{personaView.crop}"
+                                                     onsuccess="PF('dlgFoto').hide();"
+                                                     update="cropped messages dvFoto" styleClass="my-3"/>
+                                </div>
+                                <div class="p-field p-col-12 p-md-3">
+                                    <p:commandButton value="#{bundle['btn.cambiarFoto']}"
+                                                     icon="pi pi-sync"
+                                                     action="#{personaView.cambiarOtraFoto}"
+                                                     update="cropperPanel"/>
+                                </div>
+                            </div>
+                            <h:panelGrid columns="1">
+                                <h:panelGrid columns="2" cellpadding="7" >
+                                    <p:imageCropper rendered="#{empty personaView.croppedImage}"
+                                                    value="#{personaView.croppedImage}"
+                                                    id="imageCropper" cache="false"
+                                                    image="#{personaView.image}"
+                                                    initialCoords="50,50,150,100"
+                                                    minSize="50,50" maxSize="350,350"/>
+                                    <p:outputPanel>
+                                        <p:graphicImage cache="false"
+                                                        rendered="#{not empty personaView.croppedImage}"
+                                                        value="#{personaView.cropped}"/>
+                                    </p:outputPanel>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </p:outputPanel>
+                    </div>
+                </p:outputPanel>
+            </p:dialog>
+
+        </h:form>
+
+        <p:ajaxStatus>
+            <f:facet name="default">                    
+
+            </f:facet>
+            <f:facet name="start">
+                <div id="div_modal" class="layout-content ui-widget-overlay ui-dialog-mask"></div>
+                <div id="ajax_gif" class="ui-tooltip-text ui-corner-all ui-shadow">              
+                    <p:outputLabel value="Espere por favor"/>
+                    <p:progressBar id="progressBarIndeterminate" style="height:6px; margin-top: 20px;" mode="indeterminate"/>
+                </div>
+            </f:facet>
+
+            <f:facet name="complete">
+                <h:outputText value="" />
+            </f:facet>
+        </p:ajaxStatus>
+        <div class="layout-mask modal-in"></div>
+        <h:outputStylesheet name="index.css" library="css"/>
+        <h:outputStylesheet name="css/primeicons.css" library="paradise-layout"/>
+        <h:outputStylesheet name="css/primeflex.min.css" library="paradise-layout"/>
+        <h:outputStylesheet name="css/layout-blue.css" library="paradise-layout"/>
+    </h:body>
+
+</html>
