@@ -216,14 +216,18 @@ public class PersonaView implements Serializable {
     public void guardar() {
         persona.setIdGenero(idGenero);
         persona.setIdMunicipio(idMunicipio);
-        persona.setUrlDip(croppedImage.getBytes());
+        if (croppedImage != null) {
+            persona.setUrlDip(croppedImage.getBytes());
 
-        if (persona.getIdPersona() == null) {
-            personaRepo.save(persona);
-            JsfUtil.mensajeInsert();
+            if (persona.getIdPersona() == null) {
+                personaRepo.save(persona);
+                JsfUtil.mensajeInsert();
+            } else {
+                personaRepo.update(persona);
+                JsfUtil.mensajeUpdate();
+            }
         } else {
-            personaRepo.save(persona);
-            JsfUtil.mensajeUpdate();
+            JsfUtil.mensajeError("Debe de seleccionar una Imagen");
         }
     }
 

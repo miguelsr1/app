@@ -12,6 +12,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.envers.Audited;
 
 /**
  *
@@ -19,6 +20,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "PERSONA")
+@Audited
 public class Persona implements Serializable {
 
     private static final long serialVersionUID = 1L;

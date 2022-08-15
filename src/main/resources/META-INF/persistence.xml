@@ -8,6 +8,8 @@
     <class>com.demo.app.model.Persona</class>
     <class>com.demo.app.model.Usuario</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
-    <properties/>
+    <properties>
+      <property name="javax.persistence.schema-generation.database.action" value="update"/>
+    </properties>
   </persistence-unit>
 </persistence>

@@ -14,7 +14,7 @@
             <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
             <meta name="apple-mobile-web-app-capable" content="yes"/>
         </f:facet>
-        <title><ui:insert name="title">PrimeFaces Paradise</ui:insert></title>
+        <title><ui:insert name="title">#{bundle['site.title']}</ui:insert></title>
         <h:outputScript name="js/layout.js" library="paradise-layout"/>
         <h:outputScript name="js/prism.js" library="paradise-layout"/>
         <h:outputScript name="calendar-localization.js" library="js"/>
@@ -22,34 +22,34 @@
         <ui:insert name="head"/>
     </h:head>
 
-    <h:body styleClass="#{guestPreferences.inputStyleClass}" style="background-color: #303845 !important;">
+    <h:body styleClass="#{guestPreferences.inputStyleClass}">
         <h:form prependId="false">
-            <p:growl id="messages" showDetail="true" escape="false" sticky="true" >
+            <p:growl id="messages" skipDetailIfEqualsSummary="true" showDetail="true" escape="false" sticky="true" >
                 <p:autoUpdate />
             </p:growl>
 
             <div class="layout-wrapper #{guestPreferences.menuMode} ">
+                <ui:include src="../WEB-INF/topbar.xhtml"/>
+
                 <div class="layout-main">
-
-                    <p:menubar>
-                        <p:menuitem value="#{bundle['btn.nuevo']}" icon="pi pi-fw pi-plus" action="#{personaView.nuevo()}" update="areaTrabajo"/>
-                        <p:menuitem value="#{bundle['btn.guardar']}" icon="pi pi-fw pi-save" action="#{personaView.guardar()}"/>
-
-                        <f:facet  name="options">  
-                            <p:commandButton icon="pi pi-sign-out" value="Salir" action="#{guestPreferences.logout}"/>
-                        </f:facet>
-                    </p:menubar>
-
                     <div jsf:id="areaTrabajo" class="layout-content" >
+                        <p:menubar style="margin-bottom: 1rem;">
+                            <p:menuitem value="#{bundle['btn.nuevo']}" icon="pi pi-fw pi-plus" action="#{personaView.nuevo()}" update="areaTrabajo"/>
+                            <p:menuitem value="#{bundle['btn.guardar']}" icon="pi pi-fw pi-save" action="#{personaView.guardar()}" disabled="#{personaView.disabled}" update="dvDatosPersona"/>
+
+                            <f:facet  name="options">  
+                                <p:commandButton icon="pi pi-sign-out" value="Salir" action="#{guestPreferences.logout}"/>
+                            </f:facet>
+                        </p:menubar>
                         <div class="p-grid dashboard" jsf:id="dvDatosPersona">
                             <div class="p-col-12 p-md-8">
                                 <div class="card ui-fluid" jsf:id="dvDatosGenerales">
-                                    <h5>Datos generales</h5>
+                                    <h5>#{bundle['form.datosGen']}</h5>
                                     <div class="ui-fluid p-formgrid p-grid">
                                         <div class="p-col-12 p-md-9">
                                             <div class="p-field">
                                                 <p:outputLabel for="cboGen">Genero</p:outputLabel>
-                                                <p:selectOneMenu id="cboGen" value="#{personaView.idGenero}" disabled="#{personaView.disabled}" >
+                                                <p:selectOneMenu id="cboGen" value="#{personaView.idGenero}" disabled="#{personaView.disabled}" required="true" requiredMessage="Debe de seleccionar un Genero">
                                                     <f:selectItem itemLabel="Seleccione un genero" noSelectionOption="true"/>
                                                     <f:selectItems value="#{catalagosView.lstGenero}" var="gen" itemLabel="#{gen.descripcionGenero}" itemValue="#{gen.idGenero}"/>
                                                     <p:ajax update="dvDatosGenerales"/>
@@ -58,20 +58,20 @@
                                             <div class="ui-fluid p-formgrid p-grid">
                                                 <div class="p-field p-col-12 p-md-6">
                                                     <p:outputLabel for="txtPNom">Primer Nombre</p:outputLabel>
-                                                    <p:inputText id="txtPNom"  value="#{personaView.persona.primerNombre}" disabled="#{personaView.disabled}"/>
+                                                    <p:inputText id="txtPNom"  value="#{personaView.persona.primerNombre}" disabled="#{personaView.disabled}" required="true" requiredMessage="Debe de ingresar el Primer Nombre"/>
                                                 </div>
                                                 <div class="p-field p-col-12 p-md-6">
                                                     <p:outputLabel for="txtSNom">Segundo Nombre</p:outputLabel>
-                                                    <p:inputText id="txtSNom" value="#{personaView.persona.segundoNombre}" disabled="#{personaView.disabled}"/>
+                                                    <p:inputText id="txtSNom" value="#{personaView.persona.segundoNombre}" disabled="#{personaView.disabled}" required="true" requiredMessage="Debe de ingresar el Segundo Nombre"/>
                                                 </div>
 
                                                 <div class="p-field p-col-12 p-md-6">
                                                     <p:outputLabel for="txtPApe">Primer Apellido</p:outputLabel>
-                                                    <p:inputText id="txtPApe" value="#{personaView.persona.primerApellido}" disabled="#{personaView.disabled}"/>
+                                                    <p:inputText id="txtPApe" value="#{personaView.persona.primerApellido}" disabled="#{personaView.disabled}" required="true" requiredMessage="Debe de ingresar el Primer Apellido"/>
                                                 </div>
                                                 <div class="p-field p-col-12 p-md-6">
                                                     <p:outputLabel for="txtSApe">Segundo Apellido</p:outputLabel>
-                                                    <p:inputText id="txtSApe" value="#{personaView.persona.segundoApellido}" disabled="#{personaView.disabled}"/>
+                                                    <p:inputText id="txtSApe" value="#{personaView.persona.segundoApellido}" disabled="#{personaView.disabled}" />
                                                 </div>
                                             </div>
                                             <div class="p-field" style="display: #{personaView.idGenero eq 2 ?'block':'none'}">
@@ -82,11 +82,11 @@
                                             <div class="ui-fluid p-formgrid p-grid">
                                                 <div class="p-field p-col-12 p-md-6">
                                                     <p:outputLabel for="txtDirec">Fecha de Nacimiento</p:outputLabel>
-                                                    <p:calendar locale="es" pattern="dd/MM/yyyy" value="#{personaView.persona.fechaNacimiento}" disabled="#{personaView.disabled}" navigator="true"/>
+                                                    <p:calendar locale="es" pattern="dd/MM/yyyy" value="#{personaView.persona.fechaNacimiento}" disabled="#{personaView.disabled}" navigator="true" required="true" requiredMessage="Debe de ingresar la Fecha de Nacimiento"/>
                                                 </div>
                                                 <div class="p-field p-col-12 p-md-6">
                                                     <p:outputLabel for="txtNumID">Número documento de Indentidad</p:outputLabel>
-                                                    <p:inputText id="txtNumID" value="#{personaView.persona.numeroDip}" disabled="#{personaView.disabled}"/>
+                                                    <p:inputText id="txtNumID" value="#{personaView.persona.numeroDip}" disabled="#{personaView.disabled}" required="true" requiredMessage="Debe de ingresar el Número de Documento de Identidad"/>
                                                 </div>
                                             </div>
                                             <div class="p-field">
@@ -119,7 +119,7 @@
                                     <h5>Domicilio</h5>
                                     <div class="p-field">
                                         <p:outputLabel for="cboDepa">Departamento</p:outputLabel>
-                                        <p:selectOneMenu id="cboDepa" value="#{personaView.codigoDepartamento}" disabled="#{personaView.disabled}">
+                                        <p:selectOneMenu id="cboDepa" value="#{personaView.codigoDepartamento}" disabled="#{personaView.disabled}" required="true" requiredMessage="Debe de seleccionar un Departamento">
                                             <f:selectItem itemLabel="Seleccione un departamento" noSelectionOption="true"/>
                                             <f:selectItems value="#{catalagosView.lstDepartamentos}" var="dep" itemLabel="#{dep.nombreDepartamento}" itemValue="#{dep.codigoDepartamento}"/>
                                             <p:ajax update="cboMun" listener="#{personaView.actulizarMunicipios()}"/>
@@ -127,24 +127,24 @@
                                     </div>
                                     <div class="p-field">
                                         <p:outputLabel for="cboMun">Municipio</p:outputLabel>
-                                        <p:selectOneMenu id="cboMun" value="#{personaView.idMunicipio}" disabled="#{personaView.disabled}">
+                                        <p:selectOneMenu id="cboMun" value="#{personaView.idMunicipio}" disabled="#{personaView.disabled}" required="true" requiredMessage="Debe de seleccionar un Municipio">
                                             <f:selectItem itemLabel="Seleccione un municipio" noSelectionOption="true"/>
                                             <f:selectItems value="#{personaView.lstMunicipios}" var="mun" itemLabel="#{mun.nombreMunicipio}" itemValue="#{mun.idMunicipio}" />
                                         </p:selectOneMenu>
                                     </div>
                                     <div class="p-field">
                                         <p:outputLabel for="txtDirec">Dirección</p:outputLabel>
-                                        <p:inputTextarea id="txtDirec" value="#{personaView.persona.domicilio}" disabled="#{personaView.disabled}"/>
+                                        <p:inputTextarea id="txtDirec" value="#{personaView.persona.domicilio}" disabled="#{personaView.disabled}" rows="5" required="true" requiredMessage="Debe de ingresar la Dirección"/>
                                     </div>
 
                                     <div class="ui-fluid p-formgrid p-grid">
                                         <div class="p-field p-col-12 p-md-6">
                                             <p:outputLabel for="txtTel">Teléfono</p:outputLabel>
-                                            <p:inputMask id="txtTel" mask="9999-9999" value="#{personaView.persona.numeroTelefono}" disabled="#{personaView.disabled}"/>
+                                            <p:inputMask id="txtTel" mask="9999-9999" value="#{personaView.persona.numeroTelefono}" disabled="#{personaView.disabled}" required="true" requiredMessage="Debe de ingresar el Número de Teléfono"/>
                                         </div>
                                         <div class="p-field p-col-12 p-md-6">
                                             <p:outputLabel for="txtCel">Celular</p:outputLabel>
-                                            <p:inputMask id="txtCel" mask="9999-9999" value="#{personaView.persona.numeroCelular}" disabled="#{personaView.disabled}"/>
+                                            <p:inputMask id="txtCel" mask="9999-9999" value="#{personaView.persona.numeroCelular}" disabled="#{personaView.disabled}" required="true" requiredMessage="Debe de ingresar el Número de Celular"/>
                                         </div>
                                     </div>
                                 </div>

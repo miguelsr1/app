@@ -1,0 +1,23 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pa="http://primefaces.org/paradise">
+
+    <div class="topbar">
+        <div class="topbar-wrapper">             
+            <div class="topbar-left">
+                <h3>Demo App</h3>
+            </div>
+            <div class="topbar-right">
+                <a href="#" id="user-display">
+                    <span class="username">#{sessionView.usuario.usuario}</span>
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+</ui:composition>
