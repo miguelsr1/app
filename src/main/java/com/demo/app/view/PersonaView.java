@@ -10,6 +10,7 @@ import com.demo.app.repository.util.TipoOperador;
 import com.demo.app.view.util.JsfUtil;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptPersona" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="79f4576b-9451-45c4-817f-979ec15dbf59">
+<!-- Created with Jaspersoft Studio version 6.12.0.final using JasperReports Library version 6.12.1-ac0eebdb29e4c0985457bab279a6db744d661530  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptPersona" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="79f4576b-9451-45c4-817f-979ec15dbf59">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter"/>
 	<parameter name="pNombres" class="java.lang.String"/>
@@ -8,13 +8,13 @@
 	<parameter name="pDip" class="java.lang.String"/>
 	<parameter name="pNumTelefono" class="java.lang.String"/>
 	<parameter name="pNumCelular" class="java.lang.String"/>
-	<parameter name="pFechaNac" class="java.time.LocalDateTime"/>
+	<parameter name="pFechaNac" class="java.util.Date"/>
 	<parameter name="pDepa" class="java.lang.String"/>
 	<parameter name="pMuni" class="java.lang.String"/>
 	<parameter name="pDomicilio" class="java.lang.String"/>
-	<parameter name="pImagen" class="java.awt.Imagen"/>
+	<parameter name="pImagen" class="java.lang.Object"/>
 	<queryString language="SQL">
-		<![CDATA[]]>
+		<![CDATA[select url_dip from PERSONA]]>
 	</queryString>
 	<background>
 		<band splitType="Stretch"/>
@@ -24,7 +24,7 @@
 			<staticText>
 				<reportElement x="3" y="14" width="566" height="30" uuid="8c2bf45a-20f4-4764-8c68-074512458053"/>
 				<textElement textAlignment="Center">
-					<font size="22" isBold="true" isItalic="true"/>
+					<font fontName="Arial" size="22" isBold="true" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[REPORTE]]></text>
 			</staticText>
@@ -37,59 +37,60 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
-					<font size="13"/>
+					<font fontName="Arial" size="13"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pNombres}]]></textFieldExpression>
 			</textField>
 			<image>
 				<reportElement x="424" y="52" width="80" height="100" uuid="129c82ff-efe2-4c8a-93ed-034e6b77459b"/>
+				<imageExpression><![CDATA[$P{pImagen}]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement x="148" y="76" width="280" height="20" uuid="16aeec45-052c-4396-8457-3c1f8d6c9b3a"/>
 				<textElement>
-					<font size="13"/>
+					<font fontName="Arial" size="13"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pApellidos}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="148" y="101" width="280" height="20" uuid="4c19f16a-22ec-47ec-bb20-a36d80229a59"/>
 				<textElement>
-					<font size="13"/>
+					<font fontName="Arial" size="13"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pDip}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="148" y="126" width="280" height="20" uuid="d79b5c83-5b78-43cf-95a3-cd9b2de45cfa"/>
 				<textElement>
-					<font size="13"/>
+					<font fontName="Arial" size="13"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pNumTelefono}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="148" y="151" width="280" height="20" uuid="0da67e97-608f-475d-a966-54e0789b20b5"/>
 				<textElement>
-					<font size="13"/>
+					<font fontName="Arial" size="13"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pNumCelular}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="148" y="176" width="280" height="20" uuid="08cab8b3-396b-4646-82b5-d8b0ccb75b59"/>
 				<textElement>
-					<font size="13"/>
+					<font fontName="Arial" size="13"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pFechaNac}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="148" y="264" width="280" height="20" uuid="c00e44d5-1f04-4426-9bdb-af5ca456c833"/>
 				<textElement>
-					<font size="13"/>
+					<font fontName="Arial" size="13"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pDepa}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="148" y="289" width="280" height="20" uuid="190947c8-f51f-463b-bcbe-16b20171ee34"/>
 				<textElement>
-					<font size="13"/>
+					<font fontName="Arial" size="13"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pMuni}]]></textFieldExpression>
 			</textField>
@@ -98,14 +99,14 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
-					<font size="13"/>
+					<font fontName="Arial" size="13"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pDomicilio}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="39" y="12" width="170" height="30" uuid="a1dbb24a-8d55-4be2-8c74-550f3b84caa0"/>
 				<textElement>
-					<font size="16" isBold="true" isItalic="true"/>
+					<font fontName="Arial" size="16" isBold="true" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[DATOS GENERALES]]></text>
 			</staticText>
@@ -122,70 +123,70 @@
 			<staticText>
 				<reportElement x="39" y="226" width="170" height="30" uuid="bd61c9b0-cc4e-406a-8a83-f2395809e123"/>
 				<textElement>
-					<font size="16" isBold="true" isItalic="true"/>
+					<font fontName="Arial" size="16" isBold="true" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[UBICACIÓN]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="32" y="52" width="114" height="20" uuid="c6af6f6b-bac9-4d08-89bb-c37ab908fa4a"/>
 				<textElement>
-					<font size="12" isBold="true" isItalic="false"/>
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
 				</textElement>
 				<text><![CDATA[NOMBRES:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="32" y="76" width="114" height="20" uuid="fd39fa37-2658-4da2-8a2e-d811d1c173c5"/>
 				<textElement>
-					<font size="12" isBold="true" isItalic="false"/>
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
 				</textElement>
 				<text><![CDATA[APELLIDOS:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="32" y="101" width="114" height="20" uuid="c30737aa-8f17-485f-b210-f01d9dd050fb"/>
 				<textElement>
-					<font size="12" isBold="true" isItalic="false"/>
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
 				</textElement>
 				<text><![CDATA[No. DOC.:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="32" y="126" width="114" height="20" uuid="544358a0-41f0-4078-90d7-7bcab4d8db9b"/>
 				<textElement>
-					<font size="12" isBold="true" isItalic="false"/>
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
 				</textElement>
 				<text><![CDATA[TELÉFONO:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="32" y="176" width="114" height="20" uuid="e37fc32b-1444-47d8-b32a-91cd85a25ac5"/>
 				<textElement>
-					<font size="12" isBold="true" isItalic="false"/>
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
 				</textElement>
 				<text><![CDATA[FEC. NAC.:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="32" y="151" width="114" height="20" uuid="b61d25de-b902-40dd-b614-58858e013153"/>
 				<textElement>
-					<font size="12" isBold="true" isItalic="false"/>
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
 				</textElement>
 				<text><![CDATA[CELULAR:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="32" y="264" width="112" height="20" uuid="307145ad-55e4-4307-9a3a-ad1e9b2545b0"/>
 				<textElement>
-					<font size="12" isBold="true" isItalic="false"/>
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
 				</textElement>
 				<text><![CDATA[DEPARTAMENTO:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="32" y="314" width="112" height="20" uuid="9c8950db-5bb0-4105-867e-09ed3eef42cd"/>
 				<textElement>
-					<font size="12" isBold="true" isItalic="false"/>
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
 				</textElement>
 				<text><![CDATA[DOMICILIO.:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="32" y="289" width="112" height="20" uuid="b539f3ae-05e7-4104-82d6-0a0edc99ea8e"/>
 				<textElement>
-					<font size="12" isBold="true" isItalic="false"/>
+					<font fontName="Arial" size="12" isBold="true" isItalic="false"/>
 				</textElement>
 				<text><![CDATA[MUNICIPIO:]]></text>
 			</staticText>
