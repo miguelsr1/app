@@ -66,20 +66,11 @@ public class PersonaView implements Serializable {
     @Inject
     private ReportesView reporteRepo;
 
-    @ManagedProperty("#{bundle}")
-    private ResourceBundle bundle;
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("Bundle");
 
     @PostConstruct
     public void init() {
         lstPersonas = personaRepo.findAll();
-    }
-
-    public ResourceBundle getBundle() {
-        return bundle;
-    }
-
-    public void setBundle(ResourceBundle bundle) {
-        this.bundle = bundle;
     }
 
     public Boolean getDisabled() {
@@ -117,7 +108,7 @@ public class PersonaView implements Serializable {
     }
 
     public void setIdMunicipio(Integer idMunicipio) {
-        if (idMunicipio == null) {
+        if (idMunicipio != null) {
             this.idMunicipio = idMunicipio;
         }
     }
@@ -181,10 +172,10 @@ public class PersonaView implements Serializable {
     public void guardar() {
         persona.setIdGenero(idGenero);
         persona.setIdMunicipio(idMunicipio);
-        if (croppedImage != null) {
-            persona.setUrlDip(croppedImage.getBytes());
 
-            if (persona.getIdPersona() == null) {
+        persona.setUrlDip(croppedImage.getBytes());
+        if (persona.getIdPersona() == null) {
+            if (croppedImage != null) {
                 persona.setFechaInsercion(new Date());
                 persona.setEstadoEliminacion((short) 0);
                 persona.setUsuarioInsercion(securityContext.getCallerPrincipal().getName());
@@ -192,14 +183,15 @@ public class PersonaView implements Serializable {
                 lstPersonas.add(persona);
                 JsfUtil.mensajeInsert();
             } else {
-                personaRepo.update(persona);
-                JsfUtil.mensajeUpdate();
+                JsfUtil.mensajeError(RESOURCE_BUNDLE.getString("msj.error.imagen"));
             }
-
-            limpiarForm();
         } else {
-            JsfUtil.mensajeError(bundle.getString("msj.error.imagen"));
+            personaRepo.update(persona);
+            JsfUtil.mensajeUpdate();
         }
+
+        limpiarForm();
+
     }
 
     public void imprimir() {
@@ -218,7 +210,7 @@ public class PersonaView implements Serializable {
 
             reporteRepo.generarReporte(map);
         } else {
-            JsfUtil.mensajeAlerta(bundle.getString("msj.reporte.sin_persona"));
+            JsfUtil.mensajeAlerta(RESOURCE_BUNDLE.getString("msj.reporte.sin_persona"));
         }
     }
 
@@ -301,7 +293,7 @@ public class PersonaView implements Serializable {
 
     public void crop() {
         if (this.croppedImage == null || this.croppedImage.getBytes() == null || this.croppedImage.getBytes().length == 0) {
-            JsfUtil.mensajeError(bundle.getString("msj.error.imagen.corte"));
+            JsfUtil.mensajeError(RESOURCE_BUNDLE.getString("msj.error.imagen.corte"));
         }
     }
 

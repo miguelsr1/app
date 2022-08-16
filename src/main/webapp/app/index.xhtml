@@ -39,7 +39,7 @@
                             <p:menuitem value="#{bundle['btn.imprimir']}" icon="pi pi-fw pi-print" action="#{personaView.imprimir()}" ajax="false" disabled="#{personaView.disabled}" update="dvDatosPersona tblDatosPersonas"/>
 
                             <f:facet  name="options">  
-                                <p:commandButton icon="pi pi-sign-out" value="Salir" action="#{guestPreferences.logout}"/>
+                                <p:commandButton icon="pi pi-sign-out" value="Salir" action="#{guestPreferences.logout}" process="@this"/>
                             </f:facet>
                         </p:menubar>
                         <div class="p-grid dashboard" jsf:id="dvDatosPersona">
@@ -109,7 +109,7 @@
                                                                 rendered="#{not empty personaView.croppedImage}"
                                                                 value="#{personaView.cropped}"/>
                                                 <br/>
-                                                <p:commandButton style="margin-top: 1rem;" icon="pi pi-camera" onclick="PF('dlgFoto').show();" action="#{personaView.cambiarOtraFoto}" update="pnlFoto dvFoto" disabled="#{personaView.disabled}"/>
+                                                <p:commandButton style="margin-top: 1rem;" icon="pi pi-camera" onclick="PF('dlgFoto').show();" action="#{personaView.cambiarOtraFoto}" update="pnlFoto dvFoto" disabled="#{personaView.disabled}" />
                                             </div>
                                         </div>
                                     </div>
@@ -189,10 +189,10 @@
                 </div>            
             </div>
             
-            <p:remoteCommand name="fnEditarPersona" action="#{personaView.editarPersona()}" update="dvDatosPersona mbMenu"/>
+            <p:remoteCommand name="fnEditarPersona" action="#{personaView.editarPersona()}" update="dvDatosPersona mbMenu" process="@this"/>
 
 
-            <p:confirmDialog widgetVar="delPersonaDlg" showEffect="fade" width="300" message="#{bundle['msj.delete.persona']}" header="Confirm" severity="warn">
+            <p:confirmDialog widgetVar="delPersonaDlg" showEffect="fade" width="300" message="#{bundle['msj.delete.persona']}" header="Confirmar" severity="warn">
                 <p:commandButton value="Si" icon="pi pi-check" actionListener="#{personaView.eliminar()}" process="@this" oncomplete="PF('delPersonaDlg').hide()" update="dvDatosPersona tblDatosPersonas mbMenu"/>
                 <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('delPersonaDlg').hide()" />
             </p:confirmDialog>
