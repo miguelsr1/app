@@ -97,7 +97,7 @@
                                         </div>
                                         <div class="p-col-12 p-md-3 ui-fluid "  style="vertical-align: middle !important;">
                                             <div class="p-field aligns-items-center justify-content-center " jsf:id="dvFoto">
-                                                <p:graphicImage value="#{catalagosView.image}" width="150" rendered="#{personaView.persona.idPersona ne null}" >
+                                                <p:graphicImage value="#{catalagosView.image}" width="150" rendered="#{not personaView.edicionFoto}" >
                                                     <f:param name="id" value="#{personaView.persona.idPersona}" />
                                                 </p:graphicImage>
                                                 <p:graphicImage name="empty.png" library="images" 
@@ -168,7 +168,7 @@
                                             <p:outputLabel value="#{per.numeroDip}" />
                                         </p:column>
                                         <p:column headerText="Foto">
-                                            <p:graphicImage value="#{catalagosView.image}" width="50">
+                                            <p:graphicImage value="#{catalagosView.image}" width="50" cache="false">
                                                 <f:param name="id" value="#{per.idPersona}" />
                                             </p:graphicImage>
                                         </p:column>
@@ -203,6 +203,7 @@
                     <div class="card ui-fluid" jsf:id="cropperPanel">
                         <p:fileUpload mode="advanced"
                                       multiple="false"
+                                      fileLimit="1"
                                       cancelLabel="#{bundle['btn.cancelar']}"
                                       uploadLabel="#{bundle['btn.upload']}"
                                       label="#{bundle['btn.choose']}"

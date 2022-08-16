@@ -40,6 +40,7 @@ import org.primefaces.model.file.UploadedFile;
 public class PersonaView implements Serializable {
 
     private Boolean disabled = true;
+    private Boolean edicionFoto = false;
     private String codigoDepartamento;
     private Integer idGenero;
     private Integer idMunicipio;
@@ -162,6 +163,15 @@ public class PersonaView implements Serializable {
     public void cambiarOtraFoto() {
         originalImageFile = null;
         croppedImage = null;
+        edicionFoto = true;
+    }
+
+    public Boolean getEdicionFoto() {
+        return edicionFoto;
+    }
+
+    public void setEdicionFoto(Boolean edicionFoto) {
+        this.edicionFoto = edicionFoto;
     }
 
     public void nuevo() {
@@ -173,9 +183,9 @@ public class PersonaView implements Serializable {
         persona.setIdGenero(idGenero);
         persona.setIdMunicipio(idMunicipio);
 
-        persona.setUrlDip(croppedImage.getBytes());
         if (persona.getIdPersona() == null) {
             if (croppedImage != null) {
+                persona.setUrlDip(croppedImage.getBytes());
                 persona.setFechaInsercion(new Date());
                 persona.setEstadoEliminacion((short) 0);
                 persona.setUsuarioInsercion(securityContext.getCallerPrincipal().getName());
@@ -186,12 +196,19 @@ public class PersonaView implements Serializable {
                 JsfUtil.mensajeError(RESOURCE_BUNDLE.getString("msj.error.imagen"));
             }
         } else {
+            if (edicionFoto) {
+                if (croppedImage == null) {
+                    JsfUtil.mensajeError(RESOURCE_BUNDLE.getString("msj.error.imagen"));
+                } else {
+                    persona.setUrlDip(croppedImage.getBytes());
+                }
+            } 
             personaRepo.update(persona);
+            lstPersonas = personaRepo.findAll();
             JsfUtil.mensajeUpdate();
         }
 
         limpiarForm();
-
     }
 
     public void imprimir() {
@@ -231,6 +248,7 @@ public class PersonaView implements Serializable {
         croppedImage = null;
         originalImageFile = null;
         content = null;
+        edicionFoto = false;
     }
 
     public void handleFileUpload(FileUploadEvent event) {
