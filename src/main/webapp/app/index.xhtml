@@ -36,6 +36,7 @@
                         <p:menubar style="margin-bottom: 1rem;" id="mbMenu">
                             <p:menuitem value="#{bundle['btn.nuevo']}" icon="pi pi-fw pi-plus" action="#{personaView.nuevo()}" update="areaTrabajo"/>
                             <p:menuitem value="#{bundle['btn.guardar']}" icon="pi pi-fw pi-save" action="#{personaView.guardar()}" disabled="#{personaView.disabled}" update="dvDatosPersona tblDatosPersonas"/>
+                            <p:menuitem value="#{bundle['btn.imprimir']}" icon="pi pi-fw pi-print" action="#{personaView.imprimir()}" ajax="false" disabled="#{personaView.disabled}" update="dvDatosPersona tblDatosPersonas"/>
 
                             <f:facet  name="options">  
                                 <p:commandButton icon="pi pi-sign-out" value="Salir" action="#{guestPreferences.logout}"/>
@@ -192,7 +193,7 @@
 
 
             <p:confirmDialog widgetVar="delPersonaDlg" showEffect="fade" width="300" message="#{bundle['msj.delete.persona']}" header="Confirm" severity="warn">
-                <p:commandButton value="Si" icon="pi pi-check" actionListener="#{personaView.eliminarPersona()}" process="@this" oncomplete="PF('delPersonaDlg').hide()" update="dvDatosPersona tblDatosPersonas mbMenu"/>
+                <p:commandButton value="Si" icon="pi pi-check" actionListener="#{personaView.eliminar()}" process="@this" oncomplete="PF('delPersonaDlg').hide()" update="dvDatosPersona tblDatosPersonas mbMenu"/>
                 <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times" onclick="PF('delPersonaDlg').hide()" />
             </p:confirmDialog>
 

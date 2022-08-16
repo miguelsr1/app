@@ -1,5 +1,6 @@
 package com.demo.app.view;
 
+import com.demo.app.model.Departamento;
 import com.demo.app.model.Municipio;
 import com.demo.app.model.Persona;
 import com.demo.app.repository.MunicipioRepo;
@@ -11,11 +12,14 @@ import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.annotation.ManagedProperty;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.security.enterprise.SecurityContext;
@@ -38,6 +42,7 @@ public class PersonaView implements Serializable {
     private String codigoDepartamento;
     private Integer idGenero;
     private Integer idMunicipio;
+    private HashMap map;
 
     private Persona persona = new Persona();
     private List<Persona> lstPersonas = new ArrayList();
@@ -51,15 +56,29 @@ public class PersonaView implements Serializable {
 
     @Inject
     private SecurityContext securityContext;
-
     @Inject
     private PersonaRepo personaRepo;
     @Inject
     private MunicipioRepo municipioRepo;
+    @Inject
+    private CatalagosView catalagosView;
+    @Inject
+    private ReportesView reporteRepo;
+
+    @ManagedProperty("#{bundle}")
+    private ResourceBundle bundle;
 
     @PostConstruct
     public void init() {
         lstPersonas = personaRepo.findAll();
+    }
+
+    public ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    public void setBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
     }
 
     public Boolean getDisabled() {
@@ -158,13 +177,6 @@ public class PersonaView implements Serializable {
         disabled = false;
     }
 
-    public void eliminarPersona() {
-        personaRepo.delete(persona);
-        lstPersonas = personaRepo.findAll();
-        limpiarForm();
-        JsfUtil.mensajeInformacion("El Registro fue eliminado");
-    }
-
     public void guardar() {
         persona.setIdGenero(idGenero);
         persona.setIdMunicipio(idMunicipio);
@@ -185,8 +197,35 @@ public class PersonaView implements Serializable {
 
             limpiarForm();
         } else {
-            JsfUtil.mensajeError("Debe de seleccionar una Imagen");
+            JsfUtil.mensajeError(bundle.getString("msj.error.imagen"));
         }
+    }
+
+    public void imprimir() {
+        if (persona.getIdPersona() != null) {
+            map = new HashMap();
+            map.put("pNombres", persona.getPrimerNombre() + " " + persona.getSegundoNombre());
+            map.put("pApellidos", persona.getPrimerApellido() + (persona.getSegundoApellido() == null ? (" " + persona.getApellidoCasada()) : (" " + persona.getSegundoApellido())));
+            map.put("pDip", persona.getNumeroDip());
+            map.put("pNumTelefono", persona.getNumeroTelefono());
+            map.put("pNumCelular", persona.getNumeroCelular());
+            map.put("pFechaNac", persona.getFechaNacimiento());
+            map.put("pDomicilio", persona.getDomicilio());
+            map.put("pDepa", catalagosView.getLstDepartamentos().stream().filter(d -> d.getCodigoDepartamento().equals(codigoDepartamento)).findAny().get().getNombreDepartamento());
+            map.put("pMuni", lstMunicipios.stream().filter(m -> m.getIdMunicipio().equals(idMunicipio)).findAny().get().getNombreMunicipio());
+            map.put("pImagen", persona.getUrlDip());
+
+            reporteRepo.generarReporte(map);
+        } else {
+            JsfUtil.mensajeAlerta(bundle.getString("msj.reporte.sin_persona"));
+        }
+    }
+
+    public void eliminar() {
+        personaRepo.delete(persona);
+        lstPersonas = personaRepo.findAll();
+        limpiarForm();
+        JsfUtil.mensajeDelete();
     }
 
     private void limpiarForm() {
@@ -261,7 +300,7 @@ public class PersonaView implements Serializable {
 
     public void crop() {
         if (this.croppedImage == null || this.croppedImage.getBytes() == null || this.croppedImage.getBytes().length == 0) {
-            JsfUtil.mensajeError("Fallo el corte de la imagen, intentelo nuevamente por favor!");
+            JsfUtil.mensajeError(bundle.getString("msj.error.imagen.corte"));
         }
     }
 
